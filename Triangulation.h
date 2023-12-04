@@ -1,3 +1,7 @@
+#ifndef TRIANGULATION_H
+#define TRIANGULATION_H
+
+
 #include "Point.h"
 #include <vector> 
 #include <iostream>
@@ -27,3 +31,6 @@ private:
 
     void sortInCounterclockwise();
 };
+
+
+#endif
