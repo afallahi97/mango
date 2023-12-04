@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <valarray>
 
 namespace GUI {
     class Point {
