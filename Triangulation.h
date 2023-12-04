@@ -17,11 +17,21 @@ public:
 
     ~Triangulation() = default;
 
+    std::vector<GUI::Point> getResult();
+
     
 
 private:
 
+    // Attributes
+
     std::vector<GUI::Point> points;
+
+    int ear_tmp = -1;
+
+    std::vector<GUI::Point> triangulationContainer;
+
+    // Methods
 
     int indicateTurnDirection(const GUI::Point& a, const GUI::Point& b, const GUI::Point& c);
 
@@ -30,6 +40,16 @@ private:
     int getMostLeftPointIndex();
 
     void sortInCounterclockwise();
+
+    int mod(int n, int m);
+
+    bool triangleWasFreeFromOtherVertices(int a, int b, int c, const std::vector<GUI::Point>& poly);
+
+    void findAnEar();
+
+    void findTriangles();
+
+    void runTriangulation();
 };
 
 

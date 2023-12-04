@@ -67,3 +67,74 @@ void Triangulation::sortInCounterclockwise() {
     this->points = {p0};
     this->points.insert(this->points.end(), others.begin(), others.end());
 }
+
+
+int Triangulation::mod(int n, int m) {
+    return ((n % m) + m) % m;
+}
+
+
+bool Triangulation::triangleWasFreeFromOtherVertices(int a, int b, int c, const std::vector<GUI::Point>& poly) {
+    for (int k = 0; k < poly.size(); k++) {
+        if (k != a && k != b && k != c) {
+            if (isInsideTriangle(poly[a], poly[b], poly[c], poly[k])) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+void Triangulation::findAnEar() {
+    std::vector<GUI::Point> poly = this->points;
+    int i = 0;
+    int i_p;
+    int i_n;
+    bool not_found = true;
+    while (not_found) {
+        i_p = mod(i + 1, poly.size());
+        i_n = mod(i - 1, poly.size());
+        if (indicateTurnDirection(poly[i_n], poly[i], poly[i_p]) == -1) {
+            if (triangleWasFreeFromOtherVertices(i_n, i, i_p, poly)) {
+                not_found = false;
+                ear_tmp = i;
+            }
+        }
+        if (not_found) {
+            i += 1;
+        }
+    }
+}
+
+
+void Triangulation::findTriangles() {
+    std::vector<GUI::Point> poly = this->points;
+    triangulationContainer.push_back(poly[mod(ear_tmp - 1, poly.size())]);
+    triangulationContainer.push_back(poly[mod(ear_tmp + 1, poly.size())]);
+    std::vector<GUI::Point> poly1(poly.begin(), poly.begin() + ear_tmp);
+    std::vector<GUI::Point> poly2(poly.begin() + ear_tmp + 1, poly.end());
+    poly = poly1;   
+    poly.insert(poly.end(), poly2.begin(), poly2.end());
+    this->points = poly;
+    if (poly.size() > 3) {
+        findAnEar();
+        findTriangles();
+    }
+}
+
+
+
+void Triangulation::runTriangulation() {
+    if (ear_tmp == -1) {
+        findAnEar();
+    }
+    findTriangles();
+}
+
+
+
+std::vector<GUI::Point> Triangulation::getResult() {
+    runTriangulation();
+    return triangulationContainer;
+}
+
